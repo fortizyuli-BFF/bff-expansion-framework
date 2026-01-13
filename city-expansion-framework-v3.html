@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Expansion Framework - Bloomsbury Football Foundation</title>
+  <style>
+    /* Reset and base styles */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: linear-gradient(to bottom right, #f8fafc, #f1f5f9);
+      min-height: 100vh;
+      padding: 16px;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+    @media (min-width: 768px) { body { padding: 24px; } }
+    
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    /* Typography */
+    h1 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
+    @media (min-width: 768px) { h1 { font-size: 1.875rem; } }
+    h2 { font-size: 0.875rem; font-weight: 600; }
+    @media (min-width: 768px) { h2 { font-size: 1rem; } }
+    
+    /* Header */
+    .header { margin-bottom: 24px; text-align: center; }
+    @media (min-width: 768px) { .header { text-align: left; } }
+    .badge { 
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #dcfce7; color: #166534; 
+      font-size: 0.75rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 9999px; margin-bottom: 12px;
+    }
+    .subtitle { color: #64748b; font-size: 0.875rem; max-width: 680px; }
+    @media (min-width: 768px) { .subtitle { font-size: 1rem; } }
+    
+    /* Cards */
+    .card {
+      background: white; border-radius: 16px; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 16px; overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 12px 16px; color: white;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    @media (min-width: 768px) { .card-header { padding: 14px 20px; } }
+    .card-header.slate { background: linear-gradient(to right, #475569, #334155); }
+    .card-header.green { background: linear-gradient(to right, #16a34a, #15803d); }
+    .card-header.amber { background: linear-gradient(to right, #f59e0b, #d97706); }
+    .card-header.red { background: linear-gradient(to right, #dc2626, #b91c1c); }
+    
+    .card-header-left { display: flex; align-items: center; gap: 8px; }
+    .card-header-right { font-size: 0.75rem; opacity: 0.9; }
+    .count-badge {
+      font-size: 0.75rem; padding: 2px 10px; border-radius: 9999px; font-weight: 600;
+      background: rgba(255,255,255,0.25);
+    }
+    
+    /* Accordion */
+    .accordion-trigger {
+      width: 100%; padding: 16px; 
+      display: flex; justify-content: space-between; align-items: center;
+      text-align: left; background: none; border: none; cursor: pointer;
+      font-size: 0.875rem; font-weight: 500; color: #334155;
+    }
+    @media (min-width: 768px) { .accordion-trigger { padding: 16px 20px; font-size: 1rem; } }
+    .accordion-trigger:hover { background: #f8fafc; }
+    .accordion-icon {
+      width: 20px; height: 20px; color: #94a3b8; flex-shrink: 0; margin-left: 8px;
+      transition: transform 0.3s;
+    }
+    .accordion-trigger.open .accordion-icon { transform: rotate(180deg); }
+    .accordion-content {
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out;
+    }
+    .accordion-content.open { max-height: 2800px; transition: max-height 0.5s ease-in; }
+    .accordion-body { padding: 16px; background: #f8fafc; }
+    @media (min-width: 768px) { .accordion-body { padding: 20px; } }
+    .accordion-divider { border-bottom: 1px solid #f1f5f9; }
+    
+    /* Info boxes */
+    .info-box {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: white; padding: 12px; border-radius: 8px;
+      border: 1px solid #e2e8f0; margin-bottom: 12px;
+    }
+    .info-box:last-child { margin-bottom: 0; }
+    .info-number {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #dcfce7; color: #15803d;
+      font-size: 0.875rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .info-title { font-weight: 500; color: #334155; font-size: 0.875rem; }
+    .info-desc { font-size: 0.8rem; color: #64748b; }
+    
+    /* Decision boxes */
+    .decision-box {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px; border-radius: 8px; margin-bottom: 12px;
+    }
+    .decision-box:last-child { margin-bottom: 0; }
+    .decision-box.green { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .decision-box.amber { background: #fffbeb; border: 1px solid #fde68a; }
+    .decision-box.red { background: #fef2f2; border: 1px solid #fecaca; }
+    .decision-dot { width: 16px; height: 16px; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+    .decision-dot.green { background: #22c55e; }
+    .decision-dot.amber { background: #f59e0b; }
+    .decision-dot.red { background: #ef4444; }
+    .decision-title { font-weight: 600; font-size: 0.875rem; }
+    .decision-title.green { color: #166534; }
+    .decision-title.amber { color: #92400e; }
+    .decision-title.red { color: #b91c1c; }
+    .decision-score { font-weight: 400; }
+    .decision-desc { font-size: 0.8rem; margin-top: 2px; }
+    .decision-desc.green { color: #15803d; }
+    .decision-desc.amber { color: #b45309; }
+    .decision-desc.red { color: #991b1b; }
+    
+    /* City boxes */
+    .city-box {
+      background: white; padding: 12px; border-radius: 8px;
+      border: 1px solid #e2e8f0; margin-bottom: 8px;
+    }
+    .city-box:last-child { margin-bottom: 0; }
+    .city-name-box { font-weight: 600; color: #334155; font-size: 0.875rem; }
+    .city-score-box { color: #16a34a; }
+    .city-desc { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+    
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; }
+    @media (min-width: 768px) { .stats-grid { gap: 12px; } }
+    .stat-card {
+      padding: 14px; border-radius: 12px; text-align: center; color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    @media (min-width: 768px) { .stat-card { padding: 18px; } }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .stat-card.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .stat-card.amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .stat-card.red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .stat-number { font-size: 1.75rem; font-weight: 700; }
+    @media (min-width: 768px) { .stat-number { font-size: 2.25rem; } }
+    .stat-label { font-size: 0.75rem; opacity: 0.95; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    /* Calculation Example Styling */
+    .calc-container { background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .calc-header { background: #f8fafc; padding: 14px 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+    .calc-city { font-weight: 600; color: #1e293b; font-size: 1rem; }
+    .calc-final { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: 700; padding: 4px 12px; border-radius: 6px; font-size: 0.9rem; }
+    .calc-body { padding: 16px; }
+    .calc-section { margin-bottom: 16px; }
+    .calc-section:last-child { margin-bottom: 0; }
+    .calc-section-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 600; margin-bottom: 8px; }
+    .calc-row { display: flex; align-items: center; padding: 8px 12px; background: #f8fafc; border-radius: 6px; margin-bottom: 6px; font-size: 0.85rem; }
+    .calc-row:last-child { margin-bottom: 0; }
+    .calc-factor { flex: 1; color: #475569; }
+    .calc-raw { width: 80px; text-align: right; color: #64748b; }
+    .calc-weight { width: 50px; text-align: right; color: #94a3b8; font-size: 0.75rem; }
+    .calc-math { width: 160px; text-align: right; font-family: 'SF Mono', Monaco, monospace; font-size: 0.75rem; color: #64748b; }
+    .calc-points { width: 70px; text-align: right; font-weight: 600; color: #16a34a; }
+    .calc-formula { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px 16px; margin-top: 12px; }
+    .calc-formula-label { font-size: 0.7rem; text-transform: uppercase; color: #166534; font-weight: 600; margin-bottom: 6px; }
+    .calc-formula-expr { font-family: 'SF Mono', Monaco, monospace; font-size: 0.8rem; color: #15803d; line-height: 1.8; }
+    .calc-total-row { display: flex; align-items: center; padding: 12px 16px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 8px; margin-top: 12px; }
+    .calc-total-label { flex: 1; font-weight: 600; color: #166534; }
+    .calc-total-value { font-size: 1.1rem; font-weight: 700; color: #16a34a; }
+    .calc-explainer { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; margin-top: 16px; }
+    .calc-explainer-title { font-size: 0.75rem; font-weight: 600; color: #334155; margin-bottom: 8px; }
+    .calc-explainer-text { font-size: 0.8rem; color: #64748b; line-height: 1.6; }
+    .calc-explainer-text strong { color: #334155; }
+    
+    /* Tables */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    @media (min-width: 768px) { table { font-size: 0.875rem; } }
+    th { 
+      padding: 12px 10px; text-align: left; font-size: 0.65rem; 
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: #64748b; font-weight: 600; border-bottom: 2px solid #e2e8f0;
+      background: #f8fafc; white-space: nowrap;
+    }
+    th.right { text-align: right; }
+    th.center { text-align: center; }
+    td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; }
+    td.right { text-align: right; }
+    td.center { text-align: center; }
+    tbody tr { transition: background 0.15s; cursor: pointer; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody tr.expanded { background: #f0fdf4; }
+    .city-cell { font-weight: 600; color: #1e293b; }
+    .city-cell.muted { color: #94a3b8; }
+    .score-cell { font-weight: 700; }
+    .score-cell.green { color: #16a34a; }
+    .score-cell.amber { color: #d97706; }
+    .score-cell.red { color: #dc2626; }
+    .muted-cell { color: #94a3b8; }
+    .fail-cell { color: #dc2626; font-weight: 600; }
+    .bff-badge {
+      background: #dbeafe; color: #1d4ed8;
+      font-size: 0.7rem; font-weight: 600;
+      padding: 4px 8px; border-radius: 4px;
+    }
+    
+    /* Provision Gap Badge */
+    .provision-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
+      white-space: nowrap;
+    }
+    .provision-badge.high { background: #dcfce7; color: #166534; }
+    .provision-badge.mod-high { background: #d1fae5; color: #065f46; }
+    .provision-badge.mod { background: #fef3c7; color: #92400e; }
+    .provision-badge.low { background: #fee2e2; color: #991b1b; }
+    .provision-badge.tbd { background: #f1f5f9; color: #64748b; }
+    .provision-badge.na { background: #fef2f2; color: #b91c1c; }
+    .provision-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .provision-badge.high .provision-dot { background: #22c55e; }
+    .provision-badge.mod-high .provision-dot { background: #10b981; }
+    .provision-badge.mod .provision-dot { background: #f59e0b; }
+    .provision-badge.low .provision-dot { background: #ef4444; }
+    
+    /* Score bars */
+    .score-bar-container { width: 70px; height: 8px; background: #e5e7eb; border-radius: 9999px; }
+    .score-bar { height: 100%; border-radius: 9999px; transition: width 0.8s ease-out; }
+    .score-bar.green { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .score-bar.amber { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .score-bar.red { background: linear-gradient(90deg, #f87171, #ef4444); }
+    
+    /* Weights table */
+    .weights-table { background: white; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden; }
+    .weights-table th { background: #f1f5f9; }
+    .weights-table td { font-size: 0.8rem; }
+    .weight-value { font-weight: 600; color: #1e293b; }
+    
+    /* Detail Panel */
+    .detail-row { display: none; }
+    .detail-row.open { display: table-row; }
+    .detail-row td { padding: 0; background: linear-gradient(135deg, #f0fdf4, #f8fafc); }
+    .detail-content { padding: 20px; }
+    
+    /* Factor Grid */
+    .factor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (min-width: 768px) { .factor-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1024px) { .factor-grid { grid-template-columns: repeat(6, 1fr); } }
+    .factor-card {
+      background: white; border-radius: 10px; padding: 12px; text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .factor-card.high { border-color: #86efac; background: #f0fdf4; }
+    .factor-card.mod { border-color: #fde68a; background: #fffbeb; }
+    .factor-card.low { border-color: #fecaca; background: #fef2f2; }
+    .factor-icon { font-size: 1.25rem; margin-bottom: 4px; }
+    .factor-name { font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 4px; }
+    .factor-score { font-size: 1.1rem; font-weight: 700; }
+    .factor-score.high { color: #16a34a; }
+    .factor-score.mod { color: #d97706; }
+    .factor-score.low { color: #dc2626; }
+    .factor-weight { font-size: 0.6rem; color: #94a3b8; }
+    
+    /* Target Wards */
+    .section-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .ward-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px; }
+    @media (min-width: 768px) { .ward-grid { grid-template-columns: repeat(3, 1fr); } }
+    .ward-card {
+      background: white; border-radius: 8px; padding: 12px;
+      border: 1px solid #e2e8f0; border-left: 3px solid #22c55e;
+    }
+    .ward-name { font-weight: 600; color: #334155; font-size: 0.85rem; margin-bottom: 2px; }
+    .ward-stats { font-size: 0.75rem; color: #64748b; }
+    .ward-stat strong { color: #334155; }
+    
+    /* Evidence Box */
+    .evidence-box {
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 14px;
+    }
+    .evidence-box .section-label { color: #1e40af; }
+    .evidence-list { list-style: none; }
+    .evidence-list li { 
+      font-size: 0.8rem; color: #334155; padding: 5px 0 5px 18px; 
+      border-bottom: 1px solid #dbeafe; position: relative;
+    }
+    .evidence-list li:last-child { border-bottom: none; }
+    .evidence-list li::before { content: '→'; position: absolute; left: 0; color: #3b82f6; font-weight: 600; }
+    
+    /* Strategic Note */
+    .strategic-note {
+      background: linear-gradient(135deg, #fdf4ff, #fae8ff);
+      border: 1px solid #e879f9; border-radius: 8px; padding: 14px; margin-top: 12px;
+    }
+    .strategic-note .section-label { color: #a21caf; }
+    .strategic-note p { font-size: 0.8rem; color: #6b21a8; }
+    
+    /* Footer */
+    .footer {
+      background: rgba(255,255,255,0.8); border-radius: 12px;
+      padding: 14px 16px; font-size: 0.75rem; color: #64748b;
+      border: 1px solid #e2e8f0; margin-bottom: 16px;
+    }
+    .footer-label { font-weight: 600; color: #475569; }
+    .footer-text { text-align: center; font-size: 0.75rem; color: #94a3b8; }
+    
+    /* Icons */
+    .icon { width: 20px; height: 20px; }
+    .icon-sm { width: 16px; height: 16px; }
+    .icon-xs { width: 12px; height: 12px; }
+    
+    /* Mobile */
+    @media (max-width: 767px) {
+      .desktop-only { display: none; }
+    }
+    
+    /* Row expand indicator */
+    .row-expand { color: #94a3b8; transition: transform 0.2s; }
+    tr.expanded .row-expand { transform: rotate(90deg); color: #16a34a; }
+    
+    /* Print styles */
+    @media print {
+      body { background: white; }
+      .card { box-shadow: none; page-break-inside: avoid; }
+      .accordion-content { max-height: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Header -->
+    <div class="header">
+      <div class="badge">
+        <svg class="icon-xs" fill="currentColor" viewBox="0 0 20 20"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+        Strategic Planning Framework
+      </div>
+      <h1>City Expansion Framework</h1>
+      <p class="subtitle">An evidence-based GO/NO-GO decision matrix combining deprivation metrics with provision gap analysis to identify optimal expansion locations across England.</p>
+    </div>
+
+    <!-- Key Questions Accordion -->
+    <div class="card">
+      <div class="card-header slate">
+        <div class="card-header-left">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h2>Methodology</h2>
+        </div>
+      </div>
+      
+      <!-- Q1: Inclusion Criteria -->
+      <div class="accordion-divider">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>What is the inclusion criteria?</span>
+          <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <p style="font-size: 0.875rem; color: #475569; margin-bottom: 12px;">Cities must pass <strong>both</strong> criteria in our Primary Filter to be considered for expansion:</p>
+            <div class="info-box">
+              <span class="info-number">1</span>
+              <div>
+                <p class="info-title">Deprivation Threshold</p>
+                <p class="info-desc">Child poverty rate ≥30% (After Housing Costs) <span style="color:#94a3b8">OR</span> IDACI score in top 50 of 296 local authorities nationally</p>
+              </div>
+            </div>
+            <div class="info-box">
+              <span class="info-number">2</span>
+              <div>
+                <p class="info-title">Scale Threshold</p>
+                <p class="info-desc">Child population (ages 0–17) of at least 50,000 to ensure sufficient scale for sustainable operations</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q2: Scoring Methodology -->
+      <div class="accordion-divider">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>How are cities scored?</span>
+          <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <p style="font-size: 0.875rem; color: #475569; margin-bottom: 12px;">Cities passing the Primary Filter receive a composite score (0–100) using a <strong>Weighted Scoring Index</strong> that balances need indicators with provision gap analysis:</p>
+            <div class="weights-table">
+              <table>
+                <thead><tr><th>Factor</th><th class="right">Weight</th><th>Source</th></tr></thead>
+                <tbody>
+                  <tr><td>Child poverty rate (AHC)</td><td class="right weight-value">25%</td><td style="font-size:0.75rem;color:#64748b;">End Child Poverty Coalition 2025 (FY 2023/24)</td></tr>
+                  <tr><td>IDACI rank (of 296 LADs)</td><td class="right weight-value">20%</td><td style="font-size:0.75rem;color:#64748b;">English Indices of Deprivation 2025</td></tr>
+                  <tr><td>Year 6 obesity rate</td><td class="right weight-value">10%</td><td style="font-size:0.75rem;color:#64748b;">NHS NCMP 2023/24</td></tr>
+                  <tr><td>Child population (0–17)</td><td class="right weight-value">10%</td><td style="font-size:0.75rem;color:#64748b;">ONS Mid-Year Estimates 2024</td></tr>
+                  <tr><td>Core City membership</td><td class="right weight-value">15%</td><td style="font-size:0.75rem;color:#64748b;">Core Cities UK designation</td></tr>
+                  <tr style="background:#f0fdf4;"><td><strong>Provision Gap</strong></td><td class="right weight-value">20%</td><td style="font-size:0.75rem;color:#166534;">BFF Multi-Sector Assessment</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 12px; padding: 10px; background: white; border-radius: 6px; border: 1px solid #e2e8f0;">The Provision Gap factor ensures cities with the greatest opportunity (highest unmet need relative to existing provision) are appropriately prioritised alongside deprivation metrics.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q3: Provision Gap Methodology -->
+      <div class="accordion-divider">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>How is Provision Gap calculated?</span>
+          <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <p style="font-size: 0.875rem; color: #475569; margin-bottom: 12px;">Provision Gap quantifies the difference between child need and accessible youth provision across <strong>six weighted factors</strong>, each scored 1–3:</p>
+            <div class="weights-table">
+              <table>
+                <thead><tr><th>Factor</th><th class="right">Weight</th><th>Assessment Criteria</th></tr></thead>
+                <tbody>
+                  <tr><td>⚽ Football Provision Density</td><td class="right weight-value">25%</td><td style="font-size:0.75rem;color:#64748b;">Grassroots clubs per 10,000 children in poverty; geographic distribution across deprived wards</td></tr>
+                  <tr><td>🏟️ PL/EFL Foundation Saturation</td><td class="right weight-value">20%</td><td style="font-size:0.75rem;color:#64748b;">Foundation coverage, Premier League Kicks sites, published participation figures</td></tr>
+                  <tr><td>🏛️ Youth Services Trajectory</td><td class="right weight-value">20%</td><td style="font-size:0.75rem;color:#64748b;">Council financial status (S114), budget trends, youth centre closures</td></tr>
+                  <tr><td>📍 Geographic Coverage Gaps</td><td class="right weight-value">15%</td><td style="font-size:0.75rem;color:#64748b;">High-poverty wards with minimal or no structured youth provision identified</td></tr>
+                  <tr><td>📈 Development Pathways</td><td class="right weight-value">10%</td><td style="font-size:0.75rem;color:#64748b;">Gap between engagement programmes and structured development curricula</td></tr>
+                  <tr><td>🎯 Multi-Sport Provision</td><td class="right weight-value">10%</td><td style="font-size:0.75rem;color:#64748b;">Other sports, youth services, uniformed organisations, HAF programmes</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0;">
+              <p style="font-size: 0.8rem; color: #166534; margin-bottom: 8px; font-weight: 600;">Score Interpretation</p>
+              <p style="font-size: 0.8rem; color: #166534; line-height: 1.7;">
+                <span style="display:inline-block;width:10px;height:10px;background:#22c55e;border-radius:50%;margin-right:6px;vertical-align:middle;"></span><strong>HIGH (2.5–3.0)</strong> — Severe provision gaps; strong entry case<br>
+                <span style="display:inline-block;width:10px;height:10px;background:#f59e0b;border-radius:50%;margin-right:6px;vertical-align:middle;"></span><strong>MODERATE (1.8–2.4)</strong> — Some provision exists but significant gaps remain<br>
+                <span style="display:inline-block;width:10px;height:10px;background:#ef4444;border-radius:50%;margin-right:6px;vertical-align:middle;"></span><strong>LOW (1.0–1.7)</strong> — Well-served by existing provision; limited differentiation opportunity
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q4: Example Calculation -->
+      <div class="accordion-divider">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>How is the final score calculated?</span>
+          <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <p style="font-size: 0.875rem; color: #475569; margin-bottom: 16px;">Each raw metric is normalised to a 0–1 scale using minimum-maximum scaling, then multiplied by its weight. The sum of all weighted scores produces the final composite score (0–100).</p>
+            
+            <div class="calc-explainer">
+              <div class="calc-explainer-title">Understanding the Normalisation Process</div>
+              <div class="calc-explainer-text">
+                <p style="margin-bottom: 8px;"><strong>Why normalise?</strong> Raw metrics use different scales (percentages, rankings, population counts). Normalisation converts each to a comparable 0–1 scale so they can be meaningfully combined.</p>
+                <p style="margin-bottom: 8px;"><strong>How it works:</strong> Each metric is scaled relative to defined benchmarks. For example, child poverty is measured against a 50% maximum (representing the practical ceiling observed in English local authorities). A city with 46% child poverty scores 46÷50 = 0.92 on this factor.</p>
+                <p style="margin-bottom: 8px;"><strong>IDACI ranking</strong> uses the city's position among 296 English local authorities. A city ranked #3 (Birmingham) scores (296−3)÷296 = 0.99, meaning higher deprivation ranks yield higher scores. The percentage shown alongside represents the proportion of children aged 0–15 in income-deprived families.</p>
+                <p><strong>The weighted sum</strong> combines all normalised scores, with each multiplied by its assigned weight, producing a final score between 0 and 100.</p>
+              </div>
+            </div>
+            
+            <p style="font-size: 0.875rem; color: #475569; margin: 16px 0 12px 0; font-weight: 500;">Worked Example: Birmingham</p>
+            
+            <div class="calc-container">
+              <div class="calc-header">
+                <span class="calc-city">Birmingham</span>
+                <span class="calc-final">Computed Score: 94.6</span>
+              </div>
+              <div class="calc-body">
+                
+                <div class="calc-section">
+                  <div class="calc-section-title">Need Indicators (80% of total)</div>
+                  
+                  <div class="calc-row">
+                    <span class="calc-factor">Child Poverty (AHC)</span>
+                    <span class="calc-raw">46%</span>
+                    <span class="calc-weight">×25%</span>
+                    <span class="calc-math">(46 ÷ 50) × 25 =</span>
+                    <span class="calc-points">23.0</span>
+                  </div>
+                  
+                  <div class="calc-row">
+                    <span class="calc-factor">IDACI Rank</span>
+                    <span class="calc-raw">#3 of 296</span>
+                    <span class="calc-weight">×20%</span>
+                    <span class="calc-math">(296−3) ÷ 296 × 20 =</span>
+                    <span class="calc-points">19.8</span>
+                  </div>
+                  
+                  <div class="calc-row">
+                    <span class="calc-factor">Year 6 Obesity</span>
+                    <span class="calc-raw">27.0%</span>
+                    <span class="calc-weight">×10%</span>
+                    <span class="calc-math">(27.0 ÷ 30) × 10 =</span>
+                    <span class="calc-points">9.0</span>
+                  </div>
+                  
+                  <div class="calc-row">
+                    <span class="calc-factor">Child Population</span>
+                    <span class="calc-raw">295k</span>
+                    <span class="calc-weight">×10%</span>
+                    <span class="calc-math">(295 ÷ 300) × 10 =</span>
+                    <span class="calc-points">9.8</span>
+                  </div>
+                  
+                  <div class="calc-row">
+                    <span class="calc-factor">Core City Status</span>
+                    <span class="calc-raw">Yes</span>
+                    <span class="calc-weight">×15%</span>
+                    <span class="calc-math">1.0 × 15 =</span>
+                    <span class="calc-points">15.0</span>
+                  </div>
+                </div>
+                
+                <div class="calc-section">
+                  <div class="calc-section-title">Provision Gap (20% of total)</div>
+                  
+                  <div class="calc-row" style="background: #f0fdf4;">
+                    <span class="calc-factor">Provision Gap Score</span>
+                    <span class="calc-raw">2.70 / 3.0</span>
+                    <span class="calc-weight">×20%</span>
+                    <span class="calc-math">(2.70 ÷ 3.0) × 20 =</span>
+                    <span class="calc-points">18.0</span>
+                  </div>
+                </div>
+                
+                <div class="calc-formula">
+                  <div class="calc-formula-label">Composite Score Formula</div>
+                  <div class="calc-formula-expr">
+                    Score = Σ (Normalised Value × Weight)<br>
+                    <span style="color:#64748b;">Score = 23.0 + 19.8 + 9.0 + 9.8 + 15.0 + 18.0 = 94.6</span>
+                  </div>
+                </div>
+                
+                <div class="calc-total-row">
+                  <span class="calc-total-label">Total Composite Score</span>
+                  <span class="calc-total-value">94.6</span>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- Q5: Decision Categories -->
+      <div class="accordion-divider">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>What do GO, WATCH, and NO-GO mean?</span>
+          <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <div class="decision-box green">
+              <div class="decision-dot green"></div>
+              <div>
+                <p class="decision-title green">GO <span class="decision-score" style="color:#16a34a;">— Score ≥60</span></p>
+                <p class="decision-desc green">Viable expansion candidate. Meets deprivation and scale thresholds with identifiable provision gaps where BFF can deliver measurable impact.</p>
+              </div>
+            </div>
+            <div class="decision-box amber">
+              <div class="decision-dot amber"></div>
+              <div>
+                <p class="decision-title amber">WATCH <span class="decision-score" style="color:#d97706;">— Score 45–59</span></p>
+                <p class="decision-desc amber">Monitor for future consideration. Circumstances may change (e.g., council financial status, foundation capacity) that improve the opportunity.</p>
+              </div>
+            </div>
+            <div class="decision-box red">
+              <div class="decision-dot red"></div>
+              <div>
+                <p class="decision-title red">NO-GO <span class="decision-score" style="color:#dc2626;">— Fails filter or &lt;45</span></p>
+                <p class="decision-desc red">Does not meet criteria. Insufficient deprivation levels, inadequate scale, or limited strategic fit for BFF's development-focused model.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q6: Priority Cities -->
+      <div>
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>Why these priority cities for FY27–30?</span>
+          <svg class="accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            <div class="city-box">
+              <p class="city-name-box">Birmingham <span class="city-score-box">(92.6)</span> — FY27</p>
+              <p class="city-desc">Highest-scoring city. Council declared S114 bankruptcy in September 2023, triggering significant youth service reductions. Ladywood constituency has Britain's highest child poverty rate (62% AHC) yet no dedicated grassroots football provision. Largest absolute child population of any English city outside London.</p>
+            </div>
+            <div class="city-box">
+              <p class="city-name-box">Manchester <span class="city-score-box">(79.9)</span> — FY28</p>
+              <p class="city-desc">Despite two major Premier League foundations, North Manchester wards (Harpurhey, Higher Blackley, Charlestown) remain underserved. Harpurhey has 59.1% IDACI. Strategic partnership value with existing foundations offers opportunity to share learning and influence best practice at scale.</p>
+            </div>
+            <div class="city-box">
+              <p class="city-name-box">Liverpool <span class="city-score-box">(71.5)</span> — FY28</p>
+              <p class="city-desc">Fourth-highest IDACI nationally. Everton in the Community's focus on L4 postcodes (Kirkdale, County) leaves outer estates (Speke Garston, Norris Green, Croxteth) comparatively underserved. Partnership delivery model offers optimal entry approach.</p>
+            </div>
+            <div class="city-box">
+              <p class="city-name-box">Newcastle <span class="city-score-box">(61.2)</span> — FY29</p>
+              <p class="city-desc">North East regional anchor with 42% child poverty (AHC). While Newcastle United Foundation provides comprehensive coverage, hyper-local gaps exist in Inner West wards (Elswick, Wingrove, Benwell). Only Core City in the region.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="stats-grid">
+      <div class="stat-card green"><p class="stat-number">10</p><p class="stat-label">GO Cities</p></div>
+      <div class="stat-card amber"><p class="stat-number">6</p><p class="stat-label">WATCH Cities</p></div>
+      <div class="stat-card red"><p class="stat-number">10</p><p class="stat-label">NO-GO Cities</p></div>
+    </div>
+
+    <!-- GO Cities Table -->
+    <div class="card">
+      <div class="card-header green">
+        <div class="card-header-left">
+          <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <h2>GO</h2>
+          <span class="count-badge">10</span>
+        </div>
+        <span class="card-header-right">Click row for provision analysis</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>City</th>
+              <th class="right">Score</th>
+              <th class="desktop-only">Bar</th>
+              <th class="center">Provision Gap</th>
+              <th class="right">Child Poverty (AHC)</th>
+              <th class="right desktop-only">IDACI</th>
+              <th class="right desktop-only">Obesity</th>
+              <th class="right desktop-only">Children (0–17)</th>
+              <th class="center desktop-only">FY27–30</th>
+            </tr>
+          </thead>
+          <tbody id="go-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WATCH Cities Table -->
+    <div class="card">
+      <div class="card-header amber">
+        <div class="card-header-left">
+          <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+          <h2>WATCH</h2>
+          <span class="count-badge">6</span>
+        </div>
+        <span class="card-header-right">Needs score only (max 80) — Provision Gap TBD</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>City</th>
+              <th class="right">Score</th>
+              <th class="desktop-only">Bar</th>
+              <th class="center">Provision Gap</th>
+              <th class="right">Child Poverty (AHC)</th>
+              <th class="right desktop-only">IDACI</th>
+              <th class="right desktop-only">Obesity</th>
+              <th class="right desktop-only">Children (0–17)</th>
+            </tr>
+          </thead>
+          <tbody id="watch-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NO-GO Cities Table -->
+    <div class="card">
+      <div class="card-header red">
+        <div class="card-header-left">
+          <svg class="icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+          <h2>NO-GO</h2>
+          <span class="count-badge">10</span>
+        </div>
+        <span class="card-header-right">Fails inclusion criteria</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>City</th>
+              <th class="center">Provision Gap</th>
+              <th class="right">Child Poverty (AHC)</th>
+              <th class="right desktop-only">IDACI</th>
+              <th class="right desktop-only">Obesity</th>
+              <th class="right desktop-only">Children (0–17)</th>
+            </tr>
+          </thead>
+          <tbody id="nogo-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p><span class="footer-label">Data Sources:</span> End Child Poverty Coalition Local Indicators 2025 (FY 2023/24, After Housing Costs); English Indices of Deprivation 2025 (IDACI scores); NHS National Child Measurement Programme 2023/24 (Year 6 Obesity); ONS Mid-Year Population Estimates 2024; Premier League and EFL Foundation Annual Reports; Local Authority Budget Documents and S114 Notices.</p>
+      <p style="margin-top: 8px;"><span class="footer-label">Methodology:</span> Child poverty figures use After Housing Costs (AHC) methodology. IDACI rankings show position among 296 English local authorities, with percentages indicating proportion of children aged 0–15 in income-deprived families per IoD2025. Provision Gap scores derived from multi-sector assessment of football provision, professional club foundations, youth services, geographic coverage, development pathways, and alternative youth provision.</p>
+    </div>
+    <p class="footer-text">Bloomsbury Football Foundation — City Expansion Framework — January 2026</p>
+  </div>
+
+  <script>
+    // Accordion toggle
+    function toggleAccordion(btn) {
+      const content = btn.nextElementSibling;
+      const isOpen = content.classList.contains('open');
+      document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('open'));
+      document.querySelectorAll('.accordion-trigger').forEach(el => el.classList.remove('open'));
+      if (!isOpen) { content.classList.add('open'); btn.classList.add('open'); }
+    }
+
+    // VALIDATED DATA SOURCES:
+    // - IDACI: IoD2025 Table 8 (ranks 1-296, proportion of children 0-15 in income-deprived families)
+    // - Child Poverty (AHC): End Child Poverty Coalition 2025 (FY 2023/24)
+    // - Year 6 Obesity: NHS NCMP 2023/24 via OHID Fingertips (Nov 2024)
+    // - Child Population: ONS Mid-Year Estimates 2024
+    
+    // =====================================================
+    // SCORING FORMULA - Single source of truth
+    // All scores computed from this function to ensure consistency
+    // =====================================================
+    function computeScore(city, includeProvision = true) {
+      const povertyPts = (city.povertyRaw / 50) * 25;           // max 50%, weight 25%
+      const idaciPts = ((296 - city.idaciRankRaw) / 296) * 20;  // rank of 296 LADs, weight 20%
+      const obesityPts = (city.obesityRaw / 30) * 10;           // max 30%, weight 10%
+      const childrenPts = Math.min(city.childrenRaw / 300, 1) * 10; // max 300k, weight 10%, capped at 1
+      const coreCityPts = city.coreCity ? 15 : 0;               // binary, weight 15%
+      const provisionPts = includeProvision && city.provisionScore ? (city.provisionScore / 3) * 20 : 0; // max 3.0, weight 20%
+      
+      const total = povertyPts + idaciPts + obesityPts + childrenPts + coreCityPts + provisionPts;
+      return Math.round(total * 10) / 10;
+    }
+    
+    // Format display values from raw data
+    function formatCity(city) {
+      return {
+        ...city,
+        score: computeScore(city),
+        poverty: city.povertyRaw + '%',
+        idaci: city.idaciRaw + '%',
+        idaciRank: '#' + city.idaciRankRaw,
+        obesity: city.obesityRaw + '%',
+        children: city.childrenRaw + 'k'
+      };
+    }
+    
+    // GO Cities - Raw data only (scores computed at render time)
+    const goCitiesRaw = [
+      {
+        name: "Birmingham", provisionScore: 2.70, provisionLabel: "HIGH",
+        povertyRaw: 46, idaciRaw: 61.7, idaciRankRaw: 3, obesityRaw: 27.0, childrenRaw: 295, coreCity: true, bff: true,
+        factors: { football: 3, plSat: 2, youth: 3, geo: 3, pathway: 3, multi: 2 },
+        wards: [
+          { name: "Ladywood", stat: "62% AHC", note: "No dedicated grassroots provision" },
+          { name: "Bordesley Green", stat: "75% AHC", note: "4,509 children; one adjacent club" },
+          { name: "Hodge Hill", stat: "55% AHC", note: "Limited foundation reach" }
+        ],
+        evidence: [
+          "Council declared S114 bankruptcy September 2023—largest local authority cuts in UK history",
+          "£115m+ reduction to children's services; 10 youth centres narrowly avoided closure",
+          "Ladywood constituency has Britain's highest child poverty rate with no dedicated football clubs",
+          "Clear gap between engagement-focused PL Kicks programmes and structured development pathways"
+        ]
+      },
+      {
+        name: "Bradford", provisionScore: 2.80, provisionLabel: "HIGH",
+        povertyRaw: 44, idaciRaw: 50.1, idaciRankRaw: 17, obesityRaw: 26.4, childrenRaw: 142, coreCity: false, bff: false,
+        factors: { football: 3, plSat: 3, youth: 3, geo: 3, pathway: 2, multi: 2 },
+        wards: [
+          { name: "Manningham", stat: "Most deprived ward", note: "10-year life expectancy gap vs city average" },
+          { name: "Bradford Moor", stat: "Top 10% nationally", note: "Minimal grassroots football" },
+          { name: "Little Horton", stat: "30.3% under-16s", note: "High need-to-provision ratio" }
+        ],
+        evidence: [
+          "Council applied for Exceptional Financial Support following £350m grant reductions since 2011",
+          "Single League Two club foundation serving 142,000 children across the district",
+          "VCSE infrastructure support programme cancelled—£1m+ funding lost over three years",
+          "14 wards ranked in top 10% most deprived nationally; inner-city provision desert"
+        ]
+      },
+      {
+        name: "Manchester", provisionScore: 2.15, provisionLabel: "MOD",
+        povertyRaw: 45, idaciRaw: 57.5, idaciRankRaw: 6, obesityRaw: 26.9, childrenRaw: 118, coreCity: true, bff: true,
+        factors: { football: 2, plSat: 1, youth: 2.5, geo: 2, pathway: 1, multi: 2 },
+        wards: [
+          { name: "Harpurhey", stat: "59.1% IDACI", note: "North Manchester cluster" },
+          { name: "Higher Blackley", stat: "Adjacent ward", note: "Less foundation presence" },
+          { name: "Charlestown", stat: "Northern ward", note: "Geographic coverage gap" }
+        ],
+        evidence: [
+          "North Manchester wards genuinely underserved despite presence of two major foundations",
+          "Harpurhey ward has 59.1% IDACI—a clear geographic gap in provision",
+          "Strategic partnership opportunity: share learning with elite foundations",
+          "BFF model complements rather than duplicates existing provision"
+        ],
+        strategic: "Despite presence of two world-class foundations, Manchester's North cluster represents genuine provision gaps. Strategic value exists in learning partnerships—BFF can complement existing programmes and potentially influence best practice at scale."
+      },
+      {
+        name: "Nottingham", provisionScore: 2.60, provisionLabel: "HIGH",
+        povertyRaw: 38, idaciRaw: 55.4, idaciRankRaw: 8, obesityRaw: 27.1, childrenRaw: 68, coreCity: true, bff: false,
+        factors: { football: 3, plSat: 2, youth: 3, geo: 3, pathway: 2, multi: 2 },
+        wards: [
+          { name: "Aspley", stat: "43% IDACI", note: "No identified football club serving ward" },
+          { name: "Bulwell", stat: "Youth centre closing", note: "Provision infrastructure collapsing" },
+          { name: "St Ann's", stat: "40%+ IDACI", note: "One club serving two wards" }
+        ],
+        evidence: [
+          "Council declared S114 bankruptcy November 2023—projected £171.7m shortfall by 2027/28",
+          "Youth centre closures confirmed: Ridge Adventure Playground, Bulwell, Colwick",
+          "Forest's Premier League promotion (2022) brought resources but coverage remains incomplete",
+          "Council facilities facing divestment present partnership opportunity"
+        ]
+      },
+      {
+        name: "Hull", provisionScore: 2.65, provisionLabel: "HIGH",
+        povertyRaw: 38, idaciRaw: 52.4, idaciRankRaw: 19, obesityRaw: 27.8, childrenRaw: 56, coreCity: false, bff: false,
+        factors: { football: 3, plSat: 2, youth: 3, geo: 3, pathway: 2.5, multi: 2 },
+        wards: [
+          { name: "St Andrew's & Docklands", stat: "#14 nationally", note: "Most deprived ward in Hull" },
+          { name: "Orchard Park", stat: "#36 nationally", note: "Summer-only structured provision" },
+          { name: "Marfleet", stat: "#47 nationally", note: "Very limited coverage" }
+        ],
+        evidence: [
+          "19th highest IDACI ranking nationally among 296 local authorities",
+          "Council leader warned of inability to maintain essential services from April 2025",
+          "Geographic isolation—no competing foundations within 30 miles",
+          "Four wards rank in most deprived 1% nationally"
+        ]
+      },
+      {
+        name: "Leicester", provisionScore: 2.60, provisionLabel: "HIGH",
+        povertyRaw: 40, idaciRaw: 48.2, idaciRankRaw: 21, obesityRaw: 25.3, childrenRaw: 82, coreCity: true, bff: false,
+        factors: { football: 3, plSat: 2, youth: 3, geo: 3, pathway: 2, multi: 2 },
+        wards: [
+          { name: "New Parks", stat: "43% child poverty", note: "Cruyff Court hub with limited reach" },
+          { name: "Abbey & Belgrave", stat: "41%+ child poverty", note: "Significant South Asian population" },
+          { name: "Braunstone Park", stat: "40% child poverty", note: "Grassroots development potential" }
+        ],
+        evidence: [
+          "Council declared S114 'almost inevitable' in 2024—facing £50m annual funding gap",
+          "Premier League relegation (May 2023) constrains foundation growth capacity",
+          "Adventure playgrounds defunded; one-year emergency funding secured",
+          "UK's first majority-minority city presents cultural engagement opportunity"
+        ]
+      },
+      {
+        name: "Liverpool", provisionScore: 2.00, provisionLabel: "MOD",
+        povertyRaw: 41, idaciRaw: 53.3, idaciRankRaw: 14, obesityRaw: 27.8, childrenRaw: 97, coreCity: true, bff: true,
+        factors: { football: 2, plSat: 1, youth: 3, geo: 2, pathway: 2, multi: 2 },
+        wards: [
+          { name: "Speke Garston", stat: "Outer estate", note: "Less foundation presence" },
+          { name: "Norris Green", stat: "Northern outer", note: "Geographic coverage gap" },
+          { name: "Croxteth", stat: "Northern outer", note: "Partnership delivery potential" }
+        ],
+        evidence: [
+          "14th highest IDACI ranking nationally among 296 local authorities",
+          "Everton in the Community's L4 focus leaves outer estates comparatively underserved",
+          "Everton in the Community widely regarded as UK's leading sporting charity",
+          "Partnership delivery model offers optimal entry approach"
+        ]
+      },
+      {
+        name: "Wolverhampton", provisionScore: 2.45, provisionLabel: "MOD-HIGH",
+        povertyRaw: 37, idaciRaw: 52.8, idaciRankRaw: 18, obesityRaw: 30.0, childrenRaw: 65, coreCity: false, bff: false,
+        factors: { football: 2, plSat: 2, youth: 3, geo: 3, pathway: 3, multi: 2 },
+        wards: [
+          { name: "Heath Town", stat: "40%+ child poverty", note: "PL Kicks summer-only" },
+          { name: "Blakenhall", stat: "35–40% child poverty", note: "45.6% Indian ethnicity" },
+          { name: "Ettingshall", stat: "35%+ child poverty", note: "Very limited provision" }
+        ],
+        evidence: [
+          "Third-highest Year 6 obesity rate nationally at 30.0%",
+          "Youth service budget reduced from £1.75m to approximately £200k",
+          "West Midlands Police Commissioner linked youth service cuts to rising knife crime",
+          "Geographic mismatch: grassroots clubs concentrated in affluent areas"
+        ]
+      },
+      {
+        name: "Stoke-on-Trent", provisionScore: 2.70, provisionLabel: "HIGH",
+        povertyRaw: 38, idaciRaw: 47.5, idaciRankRaw: 23, obesityRaw: 27.5, childrenRaw: 56, coreCity: false, bff: false,
+        factors: { football: 3, plSat: 2, youth: 3, geo: 3, pathway: 2, multi: 3 },
+        wards: [
+          { name: "Bentilee & Ubberley", stat: "Top 5% nationally", note: "Eastern geographic isolation" },
+          { name: "Abbey Hulton", stat: "Adjacent deprived ward", note: "Limited structured provision" },
+          { name: "Tunstall", stat: "Northern town centre", note: "Historic industrial poverty" }
+        ],
+        evidence: [
+          "Council received £59m emergency government loans (2023–25)",
+          "59p of every £1 spent on social care—minimal discretionary budget",
+          "Polycentric six-town structure validates scalable multi-site delivery model",
+          "Championship-level foundation funding insufficient for citywide coverage"
+        ]
+      },
+      {
+        name: "Newcastle", provisionScore: 1.90, provisionLabel: "MOD",
+        povertyRaw: 42, idaciRaw: 45.8, idaciRankRaw: 24, obesityRaw: 24.5, childrenRaw: 54, coreCity: true, bff: true,
+        factors: { football: 2, plSat: 1, youth: 3, geo: 2, pathway: 1, multi: 2 },
+        wards: [
+          { name: "Elswick", stat: "Inner West", note: "Narrow provision gap identified" },
+          { name: "Wingrove", stat: "Adjacent ward", note: "Less foundation presence" },
+          { name: "Benwell", stat: "West cluster", note: "Hyper-local opportunity" }
+        ],
+        evidence: [
+          "Child poverty rate of 42% (AHC)—among highest in England",
+          "Newcastle United Foundation maintained comprehensive community provision post-acquisition",
+          "£9m NUCASTLE hub (opened 2022) demonstrates ongoing investment commitment",
+          "Only Core City in the North East region; strategic regional anchor"
+        ]
+      }
+    ];
+    
+    // WATCH Cities - Raw data (provision gap TBD, so scored on needs factors only)
+    const watchCitiesRaw = [
+      { name: "Oldham", povertyRaw: 35, idaciRaw: 53.2, idaciRankRaw: 15, obesityRaw: 26.1, childrenRaw: 59, coreCity: false, provisionScore: null },
+      { name: "Rochdale", povertyRaw: 34, idaciRaw: 49.5, idaciRankRaw: 20, obesityRaw: 25.8, childrenRaw: 53, coreCity: false, provisionScore: null },
+      { name: "Walsall", povertyRaw: 36, idaciRaw: 54.6, idaciRankRaw: 12, obesityRaw: 26.3, childrenRaw: 66, coreCity: false, provisionScore: null },
+      { name: "Sunderland", povertyRaw: 33, idaciRaw: 44.2, idaciRankRaw: 28, obesityRaw: 25.6, childrenRaw: 53, coreCity: false, provisionScore: null },
+      { name: "Derby", povertyRaw: 31, idaciRaw: 42.8, idaciRankRaw: 35, obesityRaw: 24.2, childrenRaw: 56, coreCity: false, provisionScore: null },
+      { name: "Coventry", povertyRaw: 32, idaciRaw: 44.5, idaciRankRaw: 27, obesityRaw: 23.8, childrenRaw: 80, coreCity: false, provisionScore: null }
+    ];
+    
+    // NO-GO Cities with failure flags (raw data for display, no scores computed)
+    const noGoCitiesRaw = [
+      { name: "Leeds", povertyRaw: 28, povertyFail: true, idaciRaw: 36.2, idaciRankRaw: 70, idaciFail: true, obesityRaw: 22.8, childrenRaw: 175, childrenFail: false },
+      { name: "Sheffield", povertyRaw: 27, povertyFail: true, idaciRaw: 35.8, idaciRankRaw: 49, idaciFail: true, obesityRaw: 22.4, childrenRaw: 122, childrenFail: false },
+      { name: "Bristol", povertyRaw: 24, povertyFail: true, idaciRaw: 32.4, idaciRankRaw: 64, idaciFail: true, obesityRaw: 21.2, childrenRaw: 94, childrenFail: false },
+      { name: "Southampton", povertyRaw: 23, povertyFail: true, idaciRaw: 30.8, idaciRankRaw: 85, idaciFail: true, obesityRaw: 19.4, childrenRaw: 53, childrenFail: false },
+      { name: "Plymouth", povertyRaw: 25, povertyFail: true, idaciRaw: 31.5, idaciRankRaw: 72, idaciFail: true, obesityRaw: 21.8, childrenRaw: 48, childrenFail: true },
+      { name: "Milton Keynes", povertyRaw: 21, povertyFail: true, idaciRaw: 26.2, idaciRankRaw: 150, idaciFail: true, obesityRaw: 18.5, childrenRaw: 70, childrenFail: false },
+      { name: "Brighton", povertyRaw: 19, povertyFail: true, idaciRaw: 24.8, idaciRankRaw: 120, idaciFail: true, obesityRaw: 17.2, childrenRaw: 46, childrenFail: true },
+      { name: "Reading", povertyRaw: 20, povertyFail: true, idaciRaw: 25.5, idaciRankRaw: 140, idaciFail: true, obesityRaw: 17.8, childrenRaw: 39, childrenFail: true },
+      { name: "Cambridge", povertyRaw: 13, povertyFail: true, idaciRaw: 18.2, idaciRankRaw: 280, idaciFail: true, obesityRaw: 12.5, childrenRaw: 23, childrenFail: true },
+      { name: "Oxford", povertyRaw: 16, povertyFail: true, idaciRaw: 22.4, idaciRankRaw: 180, idaciFail: true, obesityRaw: 14.8, childrenRaw: 29, childrenFail: true }
+    ];
+    
+    // Process raw data into display-ready format with computed scores
+    const goCities = goCitiesRaw.map(formatCity).sort((a, b) => b.score - a.score);
+    const watchCities = watchCitiesRaw.map(c => ({
+      ...c,
+      score: computeScore(c, false), // Score without provision (out of 80)
+      poverty: c.povertyRaw + '%',
+      idaci: c.idaciRaw + '%',
+      idaciRank: '#' + c.idaciRankRaw,
+      obesity: c.obesityRaw + '%',
+      children: c.childrenRaw + 'k'
+    })).sort((a, b) => b.score - a.score);
+    const noGoCities = noGoCitiesRaw.map(c => ({
+      ...c,
+      poverty: c.povertyRaw + '%',
+      idaci: c.idaciRaw + '%',
+      idaciRank: '#' + c.idaciRankRaw,
+      obesity: c.obesityRaw + '%',
+      children: c.childrenRaw + 'k'
+    }));
+
+    // Helper functions
+    function getProvisionClass(label) {
+      if (label === "HIGH") return "high";
+      if (label === "MOD-HIGH") return "mod-high";
+      if (label === "MOD") return "mod";
+      return "low";
+    }
+    
+    function getFactorClass(score) {
+      if (score >= 2.5) return "high";
+      if (score >= 1.5) return "mod";
+      return "low";
+    }
+
+    function toggleDetail(idx) {
+      const row = document.getElementById('row-' + idx);
+      const detail = document.getElementById('detail-' + idx);
+      const wasOpen = row.classList.contains('expanded');
+      
+      document.querySelectorAll('tbody tr.expanded').forEach(r => r.classList.remove('expanded'));
+      document.querySelectorAll('.detail-row.open').forEach(d => d.classList.remove('open'));
+      
+      if (!wasOpen) {
+        row.classList.add('expanded');
+        detail.classList.add('open');
+      }
+    }
+
+    // Render GO table
+    function renderGoTable() {
+      const tbody = document.getElementById('go-table');
+      const sorted = [...goCities].sort((a, b) => b.score - a.score);
+      
+      let html = '';
+      sorted.forEach((city, idx) => {
+        html += `
+          <tr id="row-${idx}" onclick="toggleDetail(${idx})">
+            <td style="width:24px;"><span class="row-expand">›</span></td>
+            <td class="city-cell">${city.name}</td>
+            <td class="right score-cell green">${city.score}</td>
+            <td class="desktop-only"><div class="score-bar-container"><div class="score-bar green" style="width:${city.score}%"></div></div></td>
+            <td class="center">
+              <span class="provision-badge ${getProvisionClass(city.provisionLabel)}">
+                <span class="provision-dot"></span>
+                ${city.provisionScore.toFixed(2)}
+              </span>
+            </td>
+            <td class="right">${city.poverty}</td>
+            <td class="right desktop-only">${city.idaciRank} (${city.idaci})</td>
+            <td class="right desktop-only">${city.obesity}</td>
+            <td class="right desktop-only">${city.children}</td>
+            <td class="center desktop-only">${city.bff ? '<span class="bff-badge">✓</span>' : ''}</td>
+          </tr>
+          <tr class="detail-row" id="detail-${idx}">
+            <td colspan="10">
+              <div class="detail-content">
+                <div class="section-label">📊 Provision Gap Factors (Score: ${city.provisionScore.toFixed(2)} / 3.00)</div>
+                <div class="factor-grid">
+                  <div class="factor-card ${getFactorClass(city.factors.football)}">
+                    <div class="factor-icon">⚽</div>
+                    <div class="factor-name">Football</div>
+                    <div class="factor-score ${getFactorClass(city.factors.football)}">${city.factors.football}/3</div>
+                    <div class="factor-weight">25%</div>
+                  </div>
+                  <div class="factor-card ${getFactorClass(city.factors.plSat)}">
+                    <div class="factor-icon">🏟️</div>
+                    <div class="factor-name">PL/EFL</div>
+                    <div class="factor-score ${getFactorClass(city.factors.plSat)}">${city.factors.plSat}/3</div>
+                    <div class="factor-weight">20%</div>
+                  </div>
+                  <div class="factor-card ${getFactorClass(city.factors.youth)}">
+                    <div class="factor-icon">🏛️</div>
+                    <div class="factor-name">Youth Svcs</div>
+                    <div class="factor-score ${getFactorClass(city.factors.youth)}">${city.factors.youth}/3</div>
+                    <div class="factor-weight">20%</div>
+                  </div>
+                  <div class="factor-card ${getFactorClass(city.factors.geo)}">
+                    <div class="factor-icon">📍</div>
+                    <div class="factor-name">Geographic</div>
+                    <div class="factor-score ${getFactorClass(city.factors.geo)}">${city.factors.geo}/3</div>
+                    <div class="factor-weight">15%</div>
+                  </div>
+                  <div class="factor-card ${getFactorClass(city.factors.pathway)}">
+                    <div class="factor-icon">📈</div>
+                    <div class="factor-name">Pathways</div>
+                    <div class="factor-score ${getFactorClass(city.factors.pathway)}">${city.factors.pathway}/3</div>
+                    <div class="factor-weight">10%</div>
+                  </div>
+                  <div class="factor-card ${getFactorClass(city.factors.multi)}">
+                    <div class="factor-icon">🎯</div>
+                    <div class="factor-name">Multi-Sport</div>
+                    <div class="factor-score ${getFactorClass(city.factors.multi)}">${city.factors.multi}/3</div>
+                    <div class="factor-weight">10%</div>
+                  </div>
+                </div>
+                
+                <div class="section-label">🎯 Priority Target Wards</div>
+                <div class="ward-grid">
+                  ${city.wards.map(w => `
+                    <div class="ward-card">
+                      <div class="ward-name">${w.name}</div>
+                      <div class="ward-stats"><strong>${w.stat}</strong> · ${w.note}</div>
+                    </div>
+                  `).join('')}
+                </div>
+                
+                <div class="evidence-box">
+                  <div class="section-label">📋 Key Evidence</div>
+                  <ul class="evidence-list">
+                    ${city.evidence.map(e => `<li>${e}</li>`).join('')}
+                  </ul>
+                </div>
+                
+                ${city.strategic ? `
+                  <div class="strategic-note">
+                    <div class="section-label">💡 Strategic Consideration</div>
+                    <p>${city.strategic}</p>
+                  </div>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    // Render WATCH table
+    function renderWatchTable() {
+      const tbody = document.getElementById('watch-table');
+      tbody.innerHTML = watchCities.map(city => `
+        <tr style="cursor:default;">
+          <td class="city-cell">${city.name}</td>
+          <td class="right score-cell amber">${city.score}</td>
+          <td class="desktop-only"><div class="score-bar-container"><div class="score-bar amber" style="width:${city.score}%"></div></div></td>
+          <td class="center"><span class="provision-badge tbd">TBD</span></td>
+          <td class="right">${city.poverty}</td>
+          <td class="right desktop-only">${city.idaciRank} (${city.idaci})</td>
+          <td class="right desktop-only">${city.obesity}</td>
+          <td class="right desktop-only">${city.children}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Render NO-GO table with red highlighting for failing criteria
+    function renderNoGoTable() {
+      const tbody = document.getElementById('nogo-table');
+      tbody.innerHTML = noGoCities.map(city => `
+        <tr style="cursor:default;">
+          <td class="city-cell muted">${city.name}</td>
+          <td class="center"><span class="provision-badge na">N/A</span></td>
+          <td class="right ${city.povertyFail ? 'fail-cell' : 'muted-cell'}">${city.poverty}</td>
+          <td class="right desktop-only ${city.idaciFail ? 'fail-cell' : 'muted-cell'}">${city.idaciRank} (${city.idaci})</td>
+          <td class="right desktop-only muted-cell">${city.obesity}</td>
+          <td class="right desktop-only ${city.childrenFail ? 'fail-cell' : 'muted-cell'}">${city.children}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Initialise
+    renderGoTable();
+    renderWatchTable();
+    renderNoGoTable();
+  </script>
+</body>
+</html>
